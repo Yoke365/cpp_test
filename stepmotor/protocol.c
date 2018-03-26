@@ -7,29 +7,26 @@
 #include "stepmotor.h"
 
 cmd_table_t cmd_table[6] ={
-    {4,   limit_switch_cmd, },
-    {8,  limit_switch_cmd},
-    {12,  connitue_run_cmd},
-    {16,  connitue_run_cmd},
-    {20,  stop_cmd},
-    {24,  stop_cmd}
+    {4,   limit_switch_cmd, switch_on},
+    {8,   limit_switch_cmd, switch_off},
+    {12,  connitue_run_cmd, orientation_clockwise},
+    {16,  connitue_run_cmd, orientation_anti_clockwise},
+    {20,  stop_cmd,         mode_slow_down},
+    {24,  stop_cmd,         mode_stutter_stop}
 };
 
-#define VALUE_FROM_0_START(x)     (x - 1)
-
-#define speed_init_base_value      50
-#define speed_run_base_value       448
-#define add_speed_time_base_value  846
-#define pulse_set_base_value       6944
 
 typedef struct {
     uint8_t    command;
+
+    /* 转换后的  */
 	uint16_t   base_val;
     uint16_t   new_val_max;
+    
+    /* 转换前的 */
 	uint16_t   val_min;
 	uint16_t   val_max;
 }range_t;
-
 
 const range_t val_range_table[4] = {
 	{speed_init_cmd,     speed_init_base_value,    348, 1, 150},
@@ -71,29 +68,38 @@ uint8_t old_type = 0;
 
 /*　量化值　
     ＠value_new：　这个值是从０开始的，　相当于量化后的最小值，还会有自己的转换公式
+
+    如果超出范围: 通过返回是-1得打
 */
-void  pwm_cmd_prase(uint16_t value, uint8_t *type, uint16_t *value_new)
-{
-    if (value <= 50) {
+int  pwm_cmd_prase(uint16_t value, uint8_t *type, uint16_t *value_new)
+{   
+    /* counter 6 */
+    if (value < common_base_value) {
         for (uint8_t i = 0; i < 6; i++) {
             if (value == cmd_table[i].value) {
                *type = cmd_table[i].type; 
+               *value_new = cmd_table[i].val;
+                goto check;
             }
-        }
-        goto check;
-    } 
-    
-    for (uint8_t i = 0; i < 4; i++) {
-        if (value < val_range_table[i].new_val_max) {
-            *type = val_range_table[i].command;
-             value_new  = (value - val_range_table[i].base_val) / 2 ;
-             break;
+        }    
+    }  else {
+        /* counter 4 */
+        for (uint8_t i = 0; i < 4; i++) {
+            if (value >= val_range_table[i].base_val 
+              && value <= val_range_table[i].new_val_max) {
+
+                *type = val_range_table[i].command;
+                *value_new  = (value - val_range_table[i].base_val) / 2 ;
+                
+                *value_new = VALUE_FROM_0_ADD(*value_new);
+                goto check;
+            }
         }
     }
 
-check:
-    if (old_type != *type) {
-        old_type = *type;
-        printf("value:%d, type: 0x%x\r\n", value, *type);
-    } 
+error: 
+    return -1;
+
+check:  
+    return 0;
 }
