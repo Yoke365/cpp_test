@@ -5,15 +5,7 @@
 #include <unistd.h>
 
 #include "stepmotor.h"
-
-#define PACKED __attribute__((packed))
-
-struct test_desc{
-	uint8_t a;
-	uint16_t b;
-	uint8_t c;
-}PACKED;
-
+#include "protocol.h"
 
 int main(int argc, char argv[])
 {    
@@ -29,9 +21,17 @@ int main(int argc, char argv[])
 	// stop_handler(0x01);
 	// state_poll_handler(0x01);
     
-    printf("test_desc: %d\r\n", sizeof(struct test_desc));
+//    printf("test_desc: %d\r\n", sizeof(struct test_desc));
     //stepmotor_test();
-	printf("test\r\n");
+	// printf("test\r\n");
+    stemp_code_creat();
+
+	for (uint16_t i = 0; i < 20000; i+=2) {
+		uint8_t local_type = 0;
+		uint16_t value;
+		pwm_cmd_prase(i, &local_type, &value);
+	}
+
 	return 0;
 }
 

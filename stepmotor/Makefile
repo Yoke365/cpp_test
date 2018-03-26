@@ -1,14 +1,22 @@
 # main: main.o work_queue.o time.o
 # 	gcc -o main main.o work_queue.o time.o
 
-main: main.o stepmotor.o
-	gcc -o main main.o stepmotor.o
+OBJ_DIR = ./obj  
+
+INC_DIR = -I./  
+
+
+main: main.o stepmotor.o protocol.o
+	@gcc -o main main.o stepmotor.o protocol.o
 
 main.o: main.c 
-	gcc -c main.c  
+	@gcc -c main.c  
 
 stepmotor.o: stepmotor.c  stepmotor.h
-	gcc -c stepmotor.c
+	@gcc -c stepmotor.c
+
+protocol.o: protocol.c  protocol.h
+	@gcc -c protocol.c
 
 # time.o: time.c time.h
 # 	gcc -c time.c  
