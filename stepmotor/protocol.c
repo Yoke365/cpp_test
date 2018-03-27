@@ -28,11 +28,13 @@ typedef struct {
 	uint16_t   val_max;
 }range_t;
 
+
+
 const range_t val_range_table[4] = {
-	{speed_init_cmd,     speed_init_base_value,    348, 1, 150},
-	{speed_run_cmd,      speed_run_base_value,     746, 1, 150},
-	{add_speed_time_cmd, add_speed_time_base_value,846, 1, 3000},
-	{pulse_set_cmd,      add_speed_time_base_value,16942, 1, 5000}
+	{speed_init_cmd,     speed_init_base_value,     speed_init_max_value,    1, 150},
+	{speed_run_cmd,      speed_run_base_value,      speed_run_max_value,     1, 150},
+	{add_speed_time_cmd, add_speed_time_base_value, add_speed_time_max_value,1, 3000},
+	{pulse_set_cmd,      pulse_set_base_value,      pulse_set_max_value,     1, 5000}
 };
 
 void stemp_code_creat(void)
@@ -96,10 +98,58 @@ int  pwm_cmd_prase(uint16_t value, uint8_t *type, uint16_t *value_new)
             }
         }
     }
-
-error: 
     return -1;
 
 check:  
     return 0;
+}
+
+void pwm_cmd_run(uint8_t type, uint16_t value)
+{
+    switch (type) {
+    case speed_init_cmd: 
+        /* 单位是k, value:1, 1k  10, 10k*/
+        speed_init_handler(0x01, (uint32_t)SPEED_COVERT(value));
+        break;
+
+    case speed_run_cmd:
+         /* 单位是k, value:1, 1k  10, 10k*/
+        speed_run_handler(0x01, (uint32_t)SPEED_COVERT(value));
+        break;
+
+    case add_speed_time_cmd:
+        add_speed_time_handler(0x01, (uint16_t)value);
+        break;
+
+    case pulse_set_cmd:
+        pulse_set_handler(0x01, (uint32_t)value);
+        break;
+
+    case limit_switch_cmd:
+        limit_switch_handler(0x01, (switch_t)value);
+        break;
+
+    case connitue_run_cmd:
+        connitue_run_handler(0x01, (orientation_t)value);
+        break;
+
+    case stop_cmd:
+        stop_handler(0x01, (stop_mode_t)value);
+        break;
+
+    default:
+        break;
+    }
+}
+
+void stepmotor_test(void)
+{   
+    /* 执行一下　*/
+    uint8_t local_type = 0;
+    uint16_t value =0;
+    
+    //左转
+    if (pwm_cmd_prase(cmd_table[2].value, &local_type, &value) == 0) {
+        pwm_cmd_run(local_type, value);
+    }
 }

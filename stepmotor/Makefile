@@ -6,11 +6,14 @@ OBJ_DIR = ./obj
 INC_DIR = -I./  
 
 
-main: main.o stepmotor.o protocol.o
-	@gcc -o main main.o stepmotor.o protocol.o
+main: main.o stepmotor.o protocol.o pwm_stepmotor.o
+	@gcc -o main main.o stepmotor.o protocol.o pwm_stepmotor.o
 
 main.o: main.c 
 	@gcc -c main.c  
+
+pwm_stepmotor.o: pwm_stepmotor.c  stepmotor.h protocol.h
+	@gcc -c pwm_stepmotor.c
 
 stepmotor.o: stepmotor.c  stepmotor.h
 	@gcc -c stepmotor.c

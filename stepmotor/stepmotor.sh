@@ -1,7 +1,10 @@
 #!/bin/bash 
+make
 
-make 
+if [ $? = 0 ]                 
+then  
+   ./main
+else  
+    echo "compiled error"
+fi  
 
-# sleep 1
-
-./main

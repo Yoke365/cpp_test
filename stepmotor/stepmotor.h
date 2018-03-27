@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define STEPMOTOR_DEBUG
+
 enum {
 	ok = 0x10,
 	error = 0x20
@@ -22,7 +24,6 @@ enum {
   state_poll_cmd       = 0x30,  
 };
 
-
 enum {
   address_poll_len     = 0,
   address_set_len      = 1, 
@@ -37,6 +38,7 @@ enum {
   state_poll_len       = 0,  
 };
 
+#pragma pack(1)
 
 typedef struct {
 	uint8_t address;
@@ -144,8 +146,8 @@ typedef struct {
 
 /* 10 command */
 typedef union {
-  address_poll_t address_poll;
-  address_set_t address_set;
+   address_poll_t address_poll;
+   address_set_t address_set;
    speed_init_t speed_init;
    speed_run_t speed_run;
    add_speed_time_t add_speed_time;
@@ -157,20 +159,14 @@ typedef union {
    state_poll_t  state_poll;
 } stepmotor_packet_union_t;
 
-
-// 01 23 04 00 00 27 10 00 5F 01 10返回成功
-
-/* 
-操作失败：地址(1字节)　＋　状态(0x20) : 01 20
-操作ok ：地址(1字节)　＋　状态(0x10)
-*/
+#pragma pack() 
 void address_poll_handler(uint8_t address);
-void address_set_handler(uint8_t address);
-void speed_init_handler(uint8_t address);
-void speed_run_handler(uint8_t address);
-void add_speed_time_handler(uint8_t address);
+void address_set_handler(uint8_t address, uint8_t new_address);
+void speed_init_handler(uint8_t address, uint32_t val);
+void speed_run_handler(uint8_t address,  uint32_t val);
+void add_speed_time_handler(uint8_t address, uint16_t time);
 void limit_switch_handler(uint8_t address, switch_t state);
-void pulse_set_handler(uint8_t address);
+void pulse_set_handler(uint8_t address, uint32_t pulse_val);
 void connitue_run_handler(uint8_t address, orientation_t orientation);
 void stop_handler(uint8_t address, stop_mode_t mode);
 void state_poll_handler(uint8_t address);
