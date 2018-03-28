@@ -3,172 +3,25 @@
 
 #include <stdint.h>
 
-#define STEPMOTOR_DEBUG
+#define I2C_M_READ           0x0001          /* read data, from slave to master */
+#define I2C_M_TEN            0x0002          /* ten bit address */
+#define I2C_M_NORESTART      0x0080          /* message should not begin with (re-)start of transfer */
 
-enum {
-	ok = 0x10,
-	error = 0x20
+#define ADDR_ID_A			0x0a
+#define ADDR_ID_B			0x0b
+#define ADDR_ID_C			0x0c
+
+#define ID_A_WHO_AM_I			'H'
+#define ID_B_WHO_AM_I			'4'
+#define ID_C_WHO_AM_I			'3'
+//I2C address >> 1: 	0x5D  => 0xBA/0xBB
+struct i2c_msg_s
+{
+  uint16_t  addr;                  /* Slave address */
+  uint16_t  flags;                 /* See I2C_M_* definitions */
+  uint8_t  *buffer;
+  int       length;
 };
 
-enum {
-  address_poll_cmd     = 0xFE,
-  address_set_cmd      = 0x22, 
-  speed_init_cmd       = 0x23,
-  speed_run_cmd	       = 0x24,	 
-  add_speed_time_cmd   = 0x25,
-
-  limit_switch_cmd     = 0x26,
-  pulse_set_cmd        = 0x27,
-  connitue_run_cmd     = 0x28,
-  stop_cmd             = 0x29,
-  state_poll_cmd       = 0x30,  
-};
-
-enum {
-  address_poll_len     = 0,
-  address_set_len      = 1, 
-  speed_init_len       = 4,
-  speed_run_len	       = 4,	 
-  add_speed_time_len   = 2,
-
-  limit_switch_len     = 1,
-  pulse_set_len        = 4,
-  connitue_run_len     = 1,
-  stop_len             = 1,
-  state_poll_len       = 0,  
-};
-
-#pragma pack(1)
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t crc_high;
-	uint8_t crc_low;
-}address_poll_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t new_address;
-	uint8_t crc_high;
-	uint8_t crc_low;
-}address_set_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t speed_init_value[4]; /*高字节在前，低字节在后*/
-	uint8_t crc_high;
-	uint8_t crc_low;
-}speed_init_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t speed_run[4]; /*高字节在前，低字节在后*/
-	uint8_t crc_high;
-	uint8_t crc_low;
-}speed_run_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t speed_time[2]; /*高字节在前，低字节在后*/
-	uint8_t crc_high;
-	uint8_t crc_low;
-}add_speed_time_t;
-
-typedef enum {
-	switch_on  = 0x10,
-	switch_off = 0x20,
-}switch_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t state; 
-	uint8_t crc_high;
-	uint8_t crc_low;
-}limit_switch_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t pulse_val[4]; /*高字节在前，低字节在后*/
-	uint8_t crc_high;
-	uint8_t crc_low;
-}pulse_set_t;
-
-typedef enum {
-	orientation_clockwise      =  0x10,
-	orientation_anti_clockwise =  0x20,
-}orientation_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t clockwise_state; 
-	uint8_t crc_high;
-	uint8_t crc_low;
-}connitue_run_t;
-
-typedef enum {
-	mode_slow_down      =  0x10,
-	mode_stutter_stop   =  0x20,
-}stop_mode_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t mode; 
-	uint8_t crc_high;
-	uint8_t crc_low;
-}stop_t;
-
-
-typedef struct {
-	uint8_t address;
-	uint8_t cmd;
-	uint8_t length;
-	uint8_t crc_high;
-	uint8_t crc_low;
-}state_poll_t;
-
-/* 10 command */
-typedef union {
-   address_poll_t address_poll;
-   address_set_t address_set;
-   speed_init_t speed_init;
-   speed_run_t speed_run;
-   add_speed_time_t add_speed_time;
-
-   limit_switch_t limit_switch;
-   pulse_set_t pulse_set;
-   connitue_run_t connitue_run;
-   stop_t stop;
-   state_poll_t  state_poll;
-} stepmotor_packet_union_t;
-
-#pragma pack() 
-void address_poll_handler(uint8_t address);
-void address_set_handler(uint8_t address, uint8_t new_address);
-void speed_init_handler(uint8_t address, uint32_t val);
-void speed_run_handler(uint8_t address,  uint32_t val);
-void add_speed_time_handler(uint8_t address, uint16_t time);
-void limit_switch_handler(uint8_t address, switch_t state);
-void pulse_set_handler(uint8_t address, uint32_t pulse_val);
-void connitue_run_handler(uint8_t address, orientation_t orientation);
-void stop_handler(uint8_t address, stop_mode_t mode);
-void state_poll_handler(uint8_t address);
-void stepmotor_test(void);
+int probe();
 #endif /* _STEP_MOTOR_H */
