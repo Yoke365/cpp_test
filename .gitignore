@@ -2,3 +2,5 @@
 ＃Crate date: 2017-05-12
 
 ./*/*_bin
+*.o
+main
