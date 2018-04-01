@@ -13,11 +13,10 @@ uint32_t tick= 0;
 uint32_t state= 0;
 
 
-c
+'a'
 int main(int argc, char argv[])
 {    
-    printf("d\r\n");
-    probe()e;
+    printf("b\r\n");
 	return 0;
 }
 
