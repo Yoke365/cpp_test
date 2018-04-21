@@ -12,7 +12,7 @@
 typedef union CanardPoolAllocatorBlock_u
 {
     char bytes[32];
-    //union CanardPoolAllocatorBlock_u* next;
+    union CanardPoolAllocatorBlock_u* next;
 } CanardPoolAllocatorBlock;
 
 /**
@@ -42,31 +42,28 @@ void initPoolAllocator(CanardPoolAllocator* allocator,
                                        CanardPoolAllocatorBlock* buf,
                                        uint16_t buf_len)
 {
-   	size_t current_index = 0;
-   	while(current_index < buf_len) {
-   		p_mem[current_index] = &buf1[current_index];
-   		printf("i: %d, *current_block: 0x%x,\r\n", current_index, p_mem[current_index]);
+   	// size_t current_index = 0;
+   	// while(current_index < buf_len) {
+   	// 	p_mem[current_index] = &buf1[current_index];
+   	// 	printf("i: %d, *current_block: 0x%x,\r\n", current_index, p_mem[current_index]);
+   	// 	current_index++;
+   	// }
 
-
-   		current_index++;
-   	}
-
-    // size_t current_index = 0;
-    // CanardPoolAllocatorBlock** current_block = &(allocator->free_list);
-    // while (current_index < buf_len)
-    // {   
+    size_t current_index = 0;
+    CanardPoolAllocatorBlock** current_block = &(allocator->free_list);
+    while (current_index < buf_len)
+    {   
     	
-    //     *current_block = &buf[current_index];
-    //     printf("i: %d, *current_block: 0x%x,\r\n", current_index, *current_block );
-    //     current_block = &((*current_block)->next);
+        *current_block = &buf[current_index]; //update
+        printf("allocator->free_list 0x%x\r\n", allocator->free_list);
+        
+        CanardPoolAllocatorBlock** block = current_block;
+        printf("(*current_block)->next 0x%x\r\n", ((*current_block)->next)); //地址
 
-    //     printf("0x%x, 0x%x,0x%x, 0x%x\r\n", buf1[32*current_index+0], 
-    //     	buf1[32*current_index+1], 
-    //     	buf1[32*current_index+2], 
-    //     	buf1[32*current_index+3]);
-    //     current_index++;
-    // }
-    // *current_block = NULL;
+        current_block = &((*current_block)->next); //next      
+        current_index++;
+    }
+    *current_block = NULL;
 
     // allocator->statistics.capacity_blocks = buf_len;
     // allocator->statistics.current_usage_blocks = 0;
@@ -148,12 +145,16 @@ int main (int argc, char **argv)
  //    char **ptr = &p2;
 
  //    printf("%d\n", **ptr); 
+     
+    int b=13;
+ 	int a=12,*p,**ptr;  
+    printf("b:0x%x a:0x%x\r\n", &a, &b);    
+    p=&a; 
+    printf("p: 0x%x 0x%x, 0x%x\r\n", p, &p, *p);
 
-	// // int a=12,*p,**ptr;  
- // //    ptr=&p;  
- // //    p=&a;  
- // //    **ptr=34;  
-    //printf("%d %d %d\n",a,*p,**ptr); 
+    // ptr=&p; 
+    // **ptr=34;  
+    // printf("%d %d %d\n",a,*p,**ptr); 
 
 	return 0;
 }
