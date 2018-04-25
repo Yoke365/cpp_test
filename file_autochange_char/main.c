@@ -1,9 +1,51 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <stdint.h>
 /* 修改源文件存放位置 */
 #define PATH "tmp.txt"
 #define PATH_TMP "tmp_dest.txt"
+
+uint8_t buf[512];
+
+struct uart_buffer_s {
+    int head;
+    int tail;
+    uint8_t *buffer;
+    int size;
+};
+
+struct uart_buffer_s recv1 = {
+    .buffer = buf,
+    .size = 512,
+};
+
+int ringbuffer_count(struct uart_buffer_s *lb)
+{
+	int n = lb->head - lb->tail;
+
+	if (n < 0) {
+		n += lb->size;
+	}
+
+	return n;
+}
+
+void uart_rx_ringbuffer_push_from_usart(struct uart_buffer_s *recv, uint8_t *u_data)
+{
+	recv->buffer[recv->head] = *u_data;
+	recv->head = (recv->head + 1) % recv->size;
+}
+
+int uart_rx_ringbuffer_pop (struct uart_buffer_s *recv,  uint8_t *data)
+{
+	*data = recv->buffer[recv->tail];
+	recv->tail = (recv->tail + 1) % recv->size;
+	return 0;
+}
+uint8_t _index = 0;
+uint8_t _find_str_len = 0;
+uint8_t _find_dup_buf[10];
+
 
 /* 1. 对于匹配比较特殊的字符串可能存在问题，如1221
  * 2. 未处理iCount值大于9的情况
@@ -12,7 +54,6 @@
  * 5. 未处理最后一次读出的最后4个字节
  *  read end;
  * */
-
 int file_change_char(char *path, char *find_str)
 {
     FILE *stream = NULL;
@@ -23,6 +64,14 @@ int file_change_char(char *path, char *find_str)
     char cMove = 0;
     char cfind_len = strlen(find_str);
     int iCount = 0;
+   
+    memset(_find_dup_buf, 0x00, 10);
+    _find_str_len  = strlen(find_str);
+    strcpy(_find_dup_buf, find_str);
+    sprintf(_find_dup_buf, "%s%d", _find_dup_buf, _index);
+
+    printf(_find_dup_buf);
+    printf("len=%d", _find_str_len);
 
     stream = fopen(path, "r+");
     if (stream ==NULL) {
@@ -32,33 +81,32 @@ int file_change_char(char *path, char *find_str)
     if (pfTmp ==NULL) {
         printf("src file no exsit\r\n");
     }
-    printf("create %s\r\n", PATH_TMP);
-   
-    //fseek(stream, 0, SEEK_SET);
-    /* 将文件内容拷贝到临时文件中 */
-    //int len = fread(acStr, 5, 1, stream);
-    // int i = 0;
-    // while(0 == fread(acStr, sizeof(acStr), 1, stream))
-    // {    
-    //     i++;
-    //     printf("i=%d\r\n", i);
-    //     printf(acStr);
-    //     if(0 > fwrite(acStr, sizeof(acStr), 1, pfTmp))
-    //     {
-    //         printf("%s:%d fwrite failed.", __FUNCTION__, __LINE__);
-    //         return -1;
-    //     }
-    //     memset(acStr, 0, sizeof(acStr));
-    // } 
      
     do {
         memset (acStr, 0x00, sizeof(acStr));
         int ret = fread(acStr, 128, 1, stream);
-        fprintf(stdout, acStr);
+
+        //fprintf(stdout, acStr);
         int len = strlen(acStr);
-        fprintf(stdout, "len:%d\r\n", len);
-        int ret_write = fwrite(acStr, len, 1, pfTmp);
-        
+
+        //找到子串. 替换子川
+        char *str;
+        str = strstr(acStr, find_str) ;
+        if (str != NULL) {
+            printf(str);
+            printf("find");
+        }
+
+        //计算子串的长度
+        // int len1 = str - acStr;
+        // printf("len:%d\r\n", len1);
+
+        //更改内容
+        _index++;
+        sprintf(_find_dup_buf, "%s%d", _find_dup_buf, _index);
+        strncpy(str, _find_dup_buf, _find_str_len);
+        //printf(acStr);
+
         if (!ret) {
             fprintf(stdout, "exit\r\n");
             break;
@@ -66,9 +114,7 @@ int file_change_char(char *path, char *find_str)
  
     } while(1);
 
-    // fread(acStr, sizeof(acStr), 1, stream);
-    // printf("content\r\n");
-    // printf(acStr);  
+   
 
     // 
     // fseek(pfTmp, 0, SEEK_SET);

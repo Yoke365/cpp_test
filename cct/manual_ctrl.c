@@ -33,7 +33,7 @@ void cct_test(uint8_t dimmer)
 		ch_attr_priv[0].cct = cct;		
 		ch_cct_dimmer_to_pwm(&ch_attr_priv[0], &led_pwm, 0);
 
-		printf(": %02d00K, %03d, %03d\r\n", 
+		printf(": %02d00K, %03d%, %03d%\r\n", 
 			cct, led_pwm.pwm_value[0], led_pwm.pwm_value[1]);
 	}
 }

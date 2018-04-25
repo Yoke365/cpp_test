@@ -13,7 +13,7 @@ wheel_mesg_s wheel_recv_mesg;
 int main(int argc, char argv[])
 {    
     cct_test(100);
-    cct_test(1);
+    //cct_test(1);
 
 	return 0;
 }
