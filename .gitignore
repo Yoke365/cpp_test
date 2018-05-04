@@ -1,6 +1,18 @@
-＃git ignore file
-＃Crate date: 2017-05-12
-
-./*/*_bin
-*.o
 main
+*.bin
+!*.c
+!*.h
+*.log
+*.plg
+*.bak
+*.dep
+*.o
+*.d
+*.crf
+*.tra
+*.axf
+*.hex
+*.lnp
+*.sct
+*.i
+*.htm
