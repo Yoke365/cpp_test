@@ -16,6 +16,11 @@ led_pwm_t led_pwm = {
 	.dmx_addr = 1,
 };
 
+//72000000/16000 = 45000
+//4500/9，500份
+//100000/16000/500 = 
+//10份开始
+
 ch_attr_desc_t ch_attr_priv[3] = {
 	{0, LED_CCT_BASE_VALUE},
 	{0, LED_CCT_BASE_VALUE},
