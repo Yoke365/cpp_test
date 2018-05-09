@@ -12,7 +12,7 @@ wheel_mesg_s wheel_recv_mesg;
  
 int main(int argc, char argv[])
 {    
-    cct_test(500);
+    cct_test(1*5+25);
     //cct_test(1);
 
 	return 0;

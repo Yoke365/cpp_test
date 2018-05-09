@@ -27,13 +27,14 @@ ch_attr_desc_t ch_attr_priv[3] = {
 	{0, LED_CCT_BASE_VALUE}
 };
 
+
+
 void cct_test(uint8_t dimmer)
 { 	
 	ch_attr_priv[0].dimmer = dimmer;
-
-
+	
 	float pause = 1000000.0f/16000.0f;
-    float min = pause/100;
+    float min = pause/500;
     printf("dimmer: %d%, cct pause: %0.4f, min pause:%0.6f\r\n", dimmer, pause, min);
 
 
@@ -45,7 +46,7 @@ void cct_test(uint8_t dimmer)
 		ch_attr_priv[0].cct = cct;		
 		ch_cct_dimmer_to_pwm(&ch_attr_priv[0], &led_pwm, 0);
 
-	printf(": %02d00K, %03d, %03d, %0.3fus %0.3fus %0.5fV, %0.5fV\r\n", 
+		printf(": %02d00K, %03d, %03d, %0.3fus %0.3fus %0.5fV, %0.5fV\r\n", 
 			cct, led_pwm.pwm_value[0], led_pwm.pwm_value[1], led_pwm.pwm_value[0]*min,  led_pwm.pwm_value[1]*min, led_pwm.pwm_value[0]/100.0f*3, led_pwm.pwm_value[1]/100.0f*3);
 	}
 }
