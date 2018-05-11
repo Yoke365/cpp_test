@@ -11,7 +11,7 @@
 
 #define LED_CCT_GET_INDEX(VAL) (VAL - LED_CCT_BASE_VALUE)
 
-#define A_PWM(cur_dim, cct) (uint8_t)(cur_dim * ((float)cct/LED_CCT_BASE_NUM_FLOAT))
+
 #define B_PWM(cur_dim,a_pwm) (cur_dim-a_pwm)
 
 #pragma pack(1)
