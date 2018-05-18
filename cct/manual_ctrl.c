@@ -27,10 +27,10 @@ ch_attr_desc_t ch_attr_priv[3] = {
 	{0, LED_CCT_BASE_VALUE}
 };
 
-
 //4400-4500k
 void cct_test(uint8_t dimmer)
 { 	
+
 	ch_attr_priv[0].dimmer = dimmer;
 	
 	float pause = 1000000.0f/16000.0f;
