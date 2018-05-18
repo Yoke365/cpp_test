@@ -9,12 +9,16 @@
 */
 wheel_mesg_s wheel_send_mesg; 
 wheel_mesg_s wheel_recv_mesg;
- 
+
+
 int main(int argc, char argv[])
 {    
-    cct_test(1*5+25);
-    //cct_test(1);
-
+	// for (uint8_t i = 0 ; i < 100; i++) {
+	// 	 cct_test(ledLinear[i]);
+	// }
+	cct_test(1);
+	pwm_test();
+ 	//test1();
 	return 0;
 }
 

@@ -21,6 +21,11 @@ struct ch_attr_desc_s{
 };
 #pragma pack ()
 
-typedef struct ch_attr_desc_s ch_attr_desc_t;
+typedef struct {
+	uint8_t pwm0;
+	uint8_t pwm1;
+}cct_ch_t;
 
+typedef struct ch_attr_desc_s ch_attr_desc_t;
+void pwm_test(void);
 #endif /* _CCT_H_ */
