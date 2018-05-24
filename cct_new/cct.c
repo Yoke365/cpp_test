@@ -104,7 +104,7 @@
 
 // cct_ch_t **pwm_table[100]={val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21,val22,val23,val24,val25,val26,val27,val28,val29,val30,val31,val32,val33,val34,val35,val36,val37,val38,val39,val40,val41,val42,val43,val44,val45,val46,val47,val48,val49,val50,val51,val52,val53,val54,val55,val56,val57,val58,val59,val60,val61,val62,val63,val64,val65,val66,val67,val68,val69,val70,val71,val72,val73,val74,val75,val76,val77,val78,val79,val80,val81,val82,val83,val84,val85,val86,val87,val88,val89,val90,val91,val92,val93,val94,val95,val96,val97,val98,val99,};
 
-#define CCT_FUN_DEBUG_EN   1
+#define CCT_FUN_DEBUG_EN   0
 
 #if CCT_FUN_DEBUG_EN
 #include <stdio.h>
@@ -117,10 +117,6 @@ uint16_t A_PWM(uint16_t cur_dim, uint16_t cct)
 {	
 	uint16_t  pwm = 0;
 	pwm = (cur_dim * ((float)cct/LED_CCT_BASE_NUM_FLOAT));
-	// if (pwm < 5) {
-	// 	pwm = 5;
-	// }
-
 	return pwm;
 }
 
@@ -132,8 +128,28 @@ uint16_t A_PWM_DMX(uint16_t cur_dim, uint16_t cct)
 	return pwm;
 }
 
+// const uint8_t ledLinear[] = {
+// 0,2,5,7,10,12,15,17,20,22,25,28,30,33,35,38,40,43,
+// 	45,48,51,53,56,58,61,63,66,68,71,73,76,79,81,84,
+// 	86,89,91,94,96,99,102,104,107,109,112,114,117,119,
+// 	122,124,127,130,132,135,137,140,142,145,147,150,153,
+// 	155,158,160,163,165,168,170,173,175,178,181,183,186,188,
+// 	191,193,196,198,201,204,206,209,211,214,216,219,221,224,226,
+// 	229,232,234,237,239,242,244,247,249,252,255
+// };
+
+// const uint8_t ledLinear[] = {
+// 0,4,6,7,10,12,15,17,20,22,25,28,30,33,35,38,40,43,
+// 	45,48,51,53,56,58,61,63,66,68,71,73,76,79,81,84,
+// 	86,89,91,94,96,99,102,104,107,109,112,114,117,119,
+// 	122,124,127,130,132,135,137,140,142,145,147,150,153,
+// 	155,158,160,163,165,168,170,173,175,178,181,183,186,188,
+// 	191,193,196,198,201,204,206,209,211,214,216,219,221,224,226,
+// 	229,232,234,237,239,242,244,247,249,252,255
+// };
+
 const uint8_t ledLinear[] = {
-0,2,5,7,10,12,15,17,20,22,25,28,30,33,35,38,40,43,
+0,11,12,13,14,15,16,17,20,22,25,28,30,33,35,38,40,43,
 	45,48,51,53,56,58,61,63,66,68,71,73,76,79,81,84,
 	86,89,91,94,96,99,102,104,107,109,112,114,117,119,
 	122,124,127,130,132,135,137,140,142,145,147,150,153,
@@ -171,25 +187,6 @@ void ch_cct_dimmer_to_pwm(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t 
 	pwm->pwm_value[2*group]   = A_PWM(dimmer, LED_CCT_GET_INDEX(ch_attr_priv->cct));
 	pwm->pwm_value[2*group+1] = B_PWM(dimmer, pwm->pwm_value[2*group]); 
 }
-
-void pwm_update_calculate(uint8_t in_dimmer, uint8_t *out_dimmer)
-{   
-	static bool first = false;
-	static float old = 0;
-	if (!first) {
-        old = in_dimmer;
-   		first = true;
-   		*out_dimmer = in_dimmer;
-   		CCT_FUN_DEBUG("old: %f: \r\n", old);
-   		return;
-	}
-
-	CCT_FUN_DEBUG("old: %f: \r\n", old);
-	old = 0.7f*old + 0.3f * (float)in_dimmer;
-	old= (float)(old +0.5);
-	*out_dimmer =old;	
-}
-
 int8_t dimmer_abs(uint8_t in, uint8_t out)
 {   
 	uint8_t diff = 0;
@@ -203,6 +200,36 @@ int8_t dimmer_abs(uint8_t in, uint8_t out)
 	return diff;
 }
 
+void pwm_update_calculate(uint8_t in_dimmer, uint8_t *out_dimmer)
+{   
+	static bool first = false;
+	static float old = 0;
+	if (!first) {
+        old = in_dimmer;
+   		first = true;
+   		*out_dimmer = in_dimmer;
+   		CCT_FUN_DEBUG("old: %f: \r\n", old);
+   		return;
+	}
+
+	if (dimmer_abs((uint8_t)old, in_dimmer) <=1) {
+		*out_dimmer = in_dimmer;
+		old = in_dimmer;
+		CCT_FUN_DEBUG("equal: old:%d, dimmer_out:%d\r\n", old, *out_dimmer);
+		return;	
+	}
+
+	CCT_FUN_DEBUG("old: %f: \r\n", old);
+	old = 0.7f*old + 0.3f * (float)in_dimmer;
+
+	uint8_t old_interge = (uint8_t)old;
+	if (old_interge >=1 && old_interge < 255) {
+		old= (float)(old +0.5); //--0
+	} 
+     
+    old = (uint8_t)old;
+	*out_dimmer =old;	
+}
 
 void ch_cct_dimmer_to_pwm1(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
 {   
@@ -218,4 +245,64 @@ void ch_cct_dimmer_to_pwm1(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t
     CCT_FUN_DEBUG("%d\r\n", dimmer_out);
 	pwm->pwm_value[2*group]   = A_PWM(dimmer_out, LED_CCT_GET_INDEX(ch_attr_priv->cct));
 	pwm->pwm_value[2*group+1] = B_PWM(dimmer_out, pwm->pwm_value[2*group]); 
+}
+
+void cct_caculate_pwm(uint8_t dimmer, ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
+{
+// pwm->pwm_value[2*group]   = A_PWM(dimmer, ch_attr_priv->cct);
+//    pwm->pwm_value[2*group+1] = B_PWM(dimmer, pwm->pwm_value[2*group]);
+
+ // filter 
+    float  pwm_float = 0;
+   	uint8_t pwm_val = 0;
+	pwm_float = (dimmer * ((float)LED_CCT_GET_INDEX(ch_attr_priv->cct)/LED_CCT_BASE_NUM_FLOAT));
+	CCT_FUN_DEBUG("pwm_float:%f\r\n", pwm_float);
+	if (pwm_float < 1) {
+		if (ch_attr_priv->cct > LED_CCT_BASE_VALUE && dimmer) {
+			pwm_val = 1;		
+	    }
+	} else {
+		pwm_val = (uint8_t)pwm_float;
+	}
+   
+    //caculate
+	pwm->pwm_value[2*group]   = pwm_val;
+	pwm->pwm_value[2*group+1] = B_PWM(dimmer, pwm->pwm_value[2*group]); 
+}
+
+int ch_cct_dimmer_to_pwm2(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
+{   
+	uint8_t dimmer = ledLinear[ch_attr_priv->dimmer]; 
+	
+	static uint8_t dimmer_out = 0;
+	static bool limit_trigger = false;
+	pwm_update_calculate(dimmer, &dimmer_out);
+	bool update = false;
+    if (dimmer_abs(dimmer, dimmer_out) ==0) {
+    	CCT_FUN_DEBUG("equal: dimmer:%d, dimmer_out:%d\r\n", dimmer, dimmer_out);
+    	if (!limit_trigger) {
+    		/* only run one time */
+			CCT_FUN_DEBUG("dimmer_out: %d\r\n", dimmer_out);
+			cct_caculate_pwm(dimmer_out, ch_attr_priv, pwm, group);
+    		limit_trigger = true;
+            update = true;
+    	}
+    } else {
+    	limit_trigger = false;
+    	update = true;
+    }
+
+	//cct update
+	static uint8_t cct_old = 0;
+	if ((cct_old != ch_attr_priv->cct) || update) {
+		CCT_FUN_DEBUG("ch_attr_priv->cct:%d\r\n", ch_attr_priv->cct);
+	    CCT_FUN_DEBUG("dimmer_out: %d\r\n", dimmer_out);
+
+		cct_caculate_pwm(dimmer_out, ch_attr_priv, pwm, group);
+
+		cct_old = ch_attr_priv->cct;
+		return -1;
+	} 
+
+	return 0;
 }

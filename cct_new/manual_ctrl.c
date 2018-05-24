@@ -113,16 +113,49 @@ void pwm_dimmer()
 
 void dimmer_update()
 {    
-	ch_attr_priv[0].dimmer = 10;
-	ch_attr_priv[0].cct = 27;
-    ch_cct_dimmer_to_pwm1(&ch_attr_priv[0], &led_pwm , 0);
+	ch_attr_priv[0].dimmer = 2;
+    for (uint8_t cct = LED_CCT_BASE_VALUE; cct <= LED_CCT_BASE_MAX; cct++) {
+		ch_attr_priv[0].cct = cct;
+    	ch_cct_dimmer_to_pwm2(&ch_attr_priv[0], &led_pwm , 0);
 
-    ch_attr_priv[0].dimmer = 20;
-	ch_attr_priv[0].cct = 27;
+		CCT_DEBUG(": %02d00K, %03d, %03d,\r\n",
+			cct, led_pwm.pwm_value[0], led_pwm.pwm_value[1]);
+	}
+
+
+ //    ch_attr_priv[0].dimmer = 20;
+	// ch_attr_priv[0].cct = 27;
     
-    for (uint8_t i = 0; i < 100; i++) {
-    	ch_attr_priv[0].dimmer = 20;
-		ch_attr_priv[0].cct = 27;
-	    ch_cct_dimmer_to_pwm1(&ch_attr_priv[0], &led_pwm , 0);	
-    }
+ //    for (uint8_t i = 0; i < 100; i++) {
+ //    	ch_attr_priv[0].dimmer = 20;
+	// 	ch_attr_priv[0].cct = 27;
+	//     int ret = ch_cct_dimmer_to_pwm2(&ch_attr_priv[0], &led_pwm , 0);
+	//     if (ret == 0) {
+	//     	break;
+	//     }
+ //    }
+     
+ //    printf("--------------------------------------");
+
+ //     for (uint8_t i = 0; i < 100; i++) {
+ //    	ch_attr_priv[0].dimmer = 10;
+	// 	ch_attr_priv[0].cct = 27;
+	//     int ret = ch_cct_dimmer_to_pwm2(&ch_attr_priv[0], &led_pwm , 0);
+	//     if (ret == 0) {
+	//     	break;
+	//     }
+	//     CCT_DEBUG("pmw0: pwm1: %d, %d\r\n", led_pwm.pwm_value[0], led_pwm.pwm_value[1]);
+ //    }
+
+ //     printf("--------------------------------dd------");
+
+ //     for (uint8_t i = 0; i < 20; i++) {
+ //    	ch_attr_priv[0].dimmer = 0;
+	// 	ch_attr_priv[0].cct = i;
+	//     int ret = ch_cct_dimmer_to_pwm2(&ch_attr_priv[0], &led_pwm , 0);
+	//     if (ret == 0) {
+	//     	break;
+	//     }
+	//     CCT_DEBUG("pmw0: pwm1: %d, %d\r\n", led_pwm.pwm_value[0], led_pwm.pwm_value[1]);
+ //    }
 }

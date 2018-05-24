@@ -6,11 +6,11 @@
 #define LED_CCT_BASE_NUM_FLOAT  33.0f
 #define LED_CCT_BASE_NUM  		33
 
-#define LED_CCT_BASE_MAX  		60
-#define LED_CCT_BASE_VALUE 		27
+#define LED_CCT_BASE_MAX  		27
+#define LED_CCT_BASE_VALUE 		0
 
-#define LED_CCT_GET_INDEX(VAL) (VAL - LED_CCT_BASE_VALUE)
-
+//#define LED_CCT_GET_INDEX(VAL) (VAL - LED_CCT_BASE_VALUE)
+#define LED_CCT_GET_INDEX(VAL) VAL
 
 #define B_PWM(cur_dim,a_pwm) (cur_dim-a_pwm)
 

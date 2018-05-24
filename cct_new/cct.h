@@ -3,15 +3,13 @@
 
 #include <stdint.h>
 #include "manual_ctrl.h"
-#define LED_CCT_BASE_NUM_FLOAT  10.0f
-#define LED_CCT_BASE_NUM  		10
+#define LED_CCT_BASE_NUM_FLOAT  33.0f
+#define LED_CCT_BASE_NUM  		33
 
-#define LED_CCT_BASE_MAX  		37
-#define LED_CCT_BASE_VALUE 		27
+#define LED_CCT_BASE_MAX  		33
+#define LED_CCT_BASE_VALUE 		0
 
 #define LED_CCT_GET_INDEX(VAL) (VAL - LED_CCT_BASE_VALUE)
-
-
 #define B_PWM(cur_dim,a_pwm) (cur_dim-a_pwm)
 
 #pragma pack(1)
@@ -29,4 +27,5 @@ typedef struct {
 typedef struct ch_attr_desc_s ch_attr_desc_t;
 void pwm_test(void);
 void ch_cct_dimmer_to_pwm1(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group);
+int ch_cct_dimmer_to_pwm2(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group);
 #endif /* _CCT_H_ */
