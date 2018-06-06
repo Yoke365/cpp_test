@@ -41,9 +41,9 @@ const uint16_t ledLinear[] =
 4095,4140,4185,4230,4275,4320,4365,4410,4455,4500,
 };
 
-void pwm_counver(uint8_t value)
+void pwm_counver(uint16_t value)
 {
-	uint8_t dimmer = (uint8_t)(value*255.0f/20.0f);
+	uint16_t dimmer = (uint16_t)(value*255.0f/20.0f);
 	CCT_FUN_DEBUG("%d,", dimmer);
 }
 
@@ -84,7 +84,7 @@ int16_t dimmer_abs(uint16_t in, uint16_t out)
 	return diff;
 }
 
-static void pwm_update_calculate(uint8_t in_dimmer, uint8_t *out_dimmer)
+static void pwm_update_calculate(uint16_t in_dimmer, uint16_t *out_dimmer)
 {   
 	static bool first = false;
 	static float old = 0;
@@ -96,7 +96,7 @@ static void pwm_update_calculate(uint8_t in_dimmer, uint8_t *out_dimmer)
    		return;
 	}
 
-	if (dimmer_abs((uint8_t)old, in_dimmer) <=1) {
+	if (dimmer_abs((uint16_t)old, in_dimmer) <=1) {
 		*out_dimmer = in_dimmer;
 		old = in_dimmer;
 		CCT_FUN_DEBUG("equal: old:%d, dimmer_out:%d\r\n", old, *out_dimmer);
@@ -111,14 +111,14 @@ static void pwm_update_calculate(uint8_t in_dimmer, uint8_t *out_dimmer)
 		old= (float)(old +0.5); //--0
 	} 
      
-    old = (uint8_t)old;
+    old = (uint16_t)old;
 	*out_dimmer =old;	
 }
 
 void pwm_test1()
 {
-	uint8_t dimmer = 0;
-	for (uint8_t i=0; i<=100; i++) {
+	uint16_t dimmer = 0;
+	for (uint16_t i=0; i<=100; i++) {
 		dimmer= ledLinear[i]; 
 		CCT_FUN_DEBUG("---dimmer:%d, %d\r\n",i,dimmer);
 	}
@@ -151,35 +151,35 @@ int ch_cct_dimmer_to_pwm2(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t 
 	dimmer= ledLinear[ch_attr_priv->dimmer];
 
 	static uint16_t dimmer_out = 0;
-	static bool limit_trigger = false;
+	// static bool limit_trigger = false;
 	//pwm_update_calculate(dimmer, &dimmer_out);
 	dimmer_out = dimmer;
-	bool update = false;
-    if (dimmer_abs(dimmer, dimmer_out) ==0) {
-    	CCT_FUN_DEBUG("equal: dimmer:%d, dimmer_out:%d\r\n", dimmer, dimmer_out);
-    	if (!limit_trigger) {
-    		/* only run one time */
-			CCT_FUN_DEBUG("dimmer_out: %d\r\n", dimmer_out);
-			cct_caculate_pwm(dimmer_out, ch_attr_priv, pwm, group);
-    		limit_trigger = true;
-            update = true;
-    	}
-    } else {
-    	limit_trigger = false;
-    	update = true;
-    }
+	// bool update = false;
+ //    if (dimmer_abs(dimmer, dimmer_out) ==0) {
+ //    	CCT_FUN_DEBUG("equal: dimmer:%d, dimmer_out:%d\r\n", dimmer, dimmer_out);
+ //    	if (!limit_trigger) {
+ //    		/* only run one time */
+	// 		CCT_FUN_DEBUG("dimmer_out: %d\r\n", dimmer_out);
+	// 		cct_caculate_pwm(dimmer_out, ch_attr_priv, pwm, group);
+ //    		limit_trigger = true;
+ //            update = true;
+ //    	}
+ //    } else {
+ //    	limit_trigger = false;
+ //    	update = true;
+ //    }
 
-	//cct update
-	static uint8_t cct_old = 0;
-	if ((cct_old != ch_attr_priv->cct) || update) {
+	// //cct update
+	// static uint8_t cct_old = 0;
+	// if ((cct_old != ch_attr_priv->cct) || update) {
 		CCT_FUN_DEBUG("ch_attr_priv->cct:%d\r\n", ch_attr_priv->cct);
 	    CCT_FUN_DEBUG("dimmer_out: %d\r\n", dimmer_out);
 
 		cct_caculate_pwm(dimmer_out, ch_attr_priv, pwm, group);
 
-		cct_old = ch_attr_priv->cct;
-		return -1;
-	} 
+	// 	cct_old = ch_attr_priv->cct;
+	// 	return -1;
+	// } 
 
 	return 0;
 }

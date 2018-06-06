@@ -122,6 +122,15 @@ void dimmer_update()
 			cct, led_pwm.pwm_value[0], led_pwm.pwm_value[1]);
 	}
 
+	ch_attr_priv[0].dimmer = 1;
+    for (uint8_t cct = LED_CCT_BASE_VALUE; cct <= LED_CCT_BASE_MAX; cct++) {
+		ch_attr_priv[0].cct = cct;
+    	ch_cct_dimmer_to_pwm2(&ch_attr_priv[0], &led_pwm , 0);
+
+		CCT_DEBUG(": %02d00K, %4d, %04d,\r\n",
+			cct, led_pwm.pwm_value[0], led_pwm.pwm_value[1]);
+	}
+
 
  //    ch_attr_priv[0].dimmer = 20;
 	// ch_attr_priv[0].cct = 27;
