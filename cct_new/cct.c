@@ -10,21 +10,7 @@
 #define CCT_FUN_DEBUG(format,...)   
 #endif 
 
-uint16_t A_PWM(uint16_t cur_dim, uint16_t cct) 
-{	
-	uint16_t  pwm = 0;
-	pwm = (cur_dim * ((float)cct/LED_CCT_BASE_NUM_FLOAT));
-	return pwm;
-}
-
-uint16_t A_PWM_DMX(uint16_t cur_dim, uint16_t cct) 
-{	
-	uint16_t  pwm = 0;
-	pwm = (cur_dim * ((float)cct/255.0f));
-
-	return pwm;
-}
-
+#define B_PWM(cur_dim,a_pwm)   (cur_dim-a_pwm)
 
 const uint16_t ledLinear[] =
 {
@@ -41,13 +27,28 @@ const uint16_t ledLinear[] =
 4095,4140,4185,4230,4275,4320,4365,4410,4455,4500,
 };
 
-void pwm_counver(uint16_t value)
+static uint16_t A_PWM(uint16_t cur_dim, uint16_t cct) 
+{	
+	uint16_t  pwm = 0;
+	pwm = (cur_dim * ((float)cct/LED_CCT_BASE_NUM_FLOAT));
+	return pwm;
+}
+
+static uint16_t A_PWM_DMX(uint16_t cur_dim, uint16_t cct) 
+{	
+	uint16_t  pwm = 0;
+	pwm = (cur_dim * ((float)cct/255.0f));
+
+	return pwm;
+}
+
+static void pwm_counver(uint16_t value)
 {
 	uint16_t dimmer = (uint16_t)(value*255.0f/20.0f);
 	CCT_FUN_DEBUG("%d,", dimmer);
 }
 
-void pwm_test(void)
+static void pwm_test(void)
 {   
 	CCT_FUN_DEBUG("\r\n{");
 	for (uint8_t i = 0; i <=20; i++) {
@@ -56,22 +57,8 @@ void pwm_test(void)
 	CCT_FUN_DEBUG("}\r\n");
 }
 
-void ch_cct_dimmer_to_pwm_dmx(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
-{   
-	uint8_t dimmer = ch_attr_priv->dimmer;
-	pwm->pwm_value[2*group]   = A_PWM_DMX(dimmer, ch_attr_priv->cct);
-	pwm->pwm_value[2*group+1] = B_PWM(dimmer, pwm->pwm_value[2*group]); 
-}
 
-void ch_cct_dimmer_to_pwm(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
-{   
-	uint16_t dimmer = ledLinear[ch_attr_priv->dimmer];
-
-	pwm->pwm_value[2*group]   = A_PWM(dimmer, LED_CCT_GET_INDEX(ch_attr_priv->cct));
-	pwm->pwm_value[2*group+1] = B_PWM(dimmer, pwm->pwm_value[2*group]); 
-}
-
-int16_t dimmer_abs(uint16_t in, uint16_t out)
+static int16_t dimmer_abs(uint16_t in, uint16_t out)
 {   
 	uint16_t diff = 0;
 
@@ -115,16 +102,7 @@ static void pwm_update_calculate(uint16_t in_dimmer, uint16_t *out_dimmer)
 	*out_dimmer =old;	
 }
 
-void pwm_test1()
-{
-	uint16_t dimmer = 0;
-	for (uint16_t i=0; i<=100; i++) {
-		dimmer= ledLinear[i]; 
-		CCT_FUN_DEBUG("---dimmer:%d, %d\r\n",i,dimmer);
-	}
-}
-
-void cct_caculate_pwm(uint16_t dimmer, ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
+static void cct_caculate_pwm(uint16_t dimmer, ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
 {
     // filter 
     float  pwm_float = 0;
@@ -146,14 +124,15 @@ void cct_caculate_pwm(uint16_t dimmer, ch_attr_desc_t *ch_attr_priv, led_pwm_t *
 
 int ch_cct_dimmer_to_pwm2(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
 {   
-	uint16_t dimmer = 0;
+	// uint16_t dimmer = 0;
 
-	dimmer= ledLinear[ch_attr_priv->dimmer];
-
+	//dimmer= ledLinear[ch_attr_priv->dimmer];
+    // dimmer = ch_attr_priv->dimmer;
 	static uint16_t dimmer_out = 0;
+	dimmer_out = ch_attr_priv->dimmer;
 	// static bool limit_trigger = false;
 	//pwm_update_calculate(dimmer, &dimmer_out);
-	dimmer_out = dimmer;
+	// dimmer_out = dimmer;
 	// bool update = false;
  //    if (dimmer_abs(dimmer, dimmer_out) ==0) {
  //    	CCT_FUN_DEBUG("equal: dimmer:%d, dimmer_out:%d\r\n", dimmer, dimmer_out);
@@ -182,4 +161,29 @@ int ch_cct_dimmer_to_pwm2(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t 
 	// } 
 
 	return 0;
+}
+
+void ch_cct_dimmer_to_pwm_dmx(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
+{   
+	uint8_t dimmer = ch_attr_priv->dimmer;
+	pwm->pwm_value[2*group]   = A_PWM_DMX(dimmer, ch_attr_priv->cct);
+	pwm->pwm_value[2*group+1] = B_PWM(dimmer, pwm->pwm_value[2*group]); 
+}
+
+void ch_cct_dimmer_to_pwm(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group)
+{   
+	uint16_t dimmer = ledLinear[ch_attr_priv->dimmer];
+
+	pwm->pwm_value[2*group]   = A_PWM(dimmer, LED_CCT_GET_INDEX(ch_attr_priv->cct));
+	pwm->pwm_value[2*group+1] = B_PWM(dimmer, pwm->pwm_value[2*group]); 
+}
+
+void pwm_test1()
+{
+	uint16_t dimmer = 0;
+	for (uint16_t i=0; i<=100; i++) {
+		dimmer= ledLinear[i]; 
+		CCT_FUN_DEBUG("---dimmer:%d, %d\r\n",i,dimmer);
+	}
+	dimmer = dimmer;
 }

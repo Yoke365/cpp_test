@@ -2,30 +2,21 @@
 #define _CCT_H_
 
 #include <stdint.h>
-#include "manual_ctrl.h"
-#define LED_CCT_BASE_NUM_FLOAT  33.0f
-#define LED_CCT_BASE_NUM  		33
+#include "dimmer.h"
 
-#define LED_CCT_BASE_MAX  		33
 #define LED_CCT_BASE_VALUE 		0
+#define LED_CCT_BASE_MAX  		255
+#define LED_CCT_RANGE  		    3300
 
-#define LED_CCT_GET_INDEX(VAL) (VAL - LED_CCT_BASE_VALUE)
-#define B_PWM(cur_dim,a_pwm) (cur_dim-a_pwm)
+#define LED_CCT_BASE_NUM  		LED_CCT_BASE_MAX
+#define LED_CCT_BASE_NUM_FLOAT  (255.0f)
+#define LED_CCT_GET_INDEX(val)  (val - LED_CCT_BASE_VALUE)
+#define ADD_VALUE_UNIT         (LED_CCT_RANGE/LED_CCT_BASE_NUM_FLOAT)
 
-#pragma pack(1)
-struct ch_attr_desc_s{
-	uint8_t dimmer;
-	uint8_t cct;
-};
-#pragma pack ()
+#define LED_CCT_COVER(a)       (2700+a*13)
 
-typedef struct {
-	uint8_t pwm0;
-	uint8_t pwm1;
-}cct_ch_t;
-
-typedef struct ch_attr_desc_s ch_attr_desc_t;
-void pwm_test(void);
-void ch_cct_dimmer_to_pwm1(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group);
 int ch_cct_dimmer_to_pwm2(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group);
+void ch_cct_dimmer_to_pwm_dmx(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group);
+void ch_cct_dimmer_to_pwm(ch_attr_desc_t *ch_attr_priv, led_pwm_t *pwm, uint8_t group);
+
 #endif /* _CCT_H_ */
