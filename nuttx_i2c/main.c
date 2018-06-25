@@ -27,19 +27,47 @@ frame_t frame_3 ;
 
 frame_t *frame_group[] = {&frame_1, &frame_2, &frame_3};
 
-void test()
-{
-	
+void print_info(uint8_t *buf, uint8_t len)
+{ 
+
+    printf("{");
+	for(int i = 0; i < len; i++) {
+		printf("%02x ", buf[i]);
+	}
+	printf("}\r\n");
+
+}
+
+char device_id[10] = "0000000001";
+
+//get 4bit
+int device_id_test(char *id, uint8_t len, uint16_t id_val)
+{  
+	if (len != 10) {
+		return -1;
+	}
+	char device_id_4bit[5];
+
+	memcpy(device_id_4bit, &id[6], 4);
+	device_id_4bit[5] ='0';
+
+	// print_info(device_id_4bit, sizeof(device_id_4bit));
+	id_val = atoi(device_id_4bit);
+	// printf("devide_id_new:%d\r\n", devide_id_new);
+
+	return 0;
 }
 
 int main(int argc, char argv[])
 {    
-    printf("b\r\n");
+    // printf("b\r\n");
 
-    uint16_t len = 0;
+    // uint16_t len = 0;
 
-    len = sizeof(ledLinear);
-    printf("len:%d\r\n", len);
+    // len = sizeof(ledLinear);
+    // printf("len:%d\r\n", len);
+
+    device_id_test();
 	return 0;
 }
 
