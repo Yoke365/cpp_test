@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define NEW_DIMMER(val) (val/255.0f)
 #pragma pack(1)
 struct ch_attr_desc_s{
 	uint8_t dimmer;

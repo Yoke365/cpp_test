@@ -91,16 +91,33 @@ void pwm_dimmer()
 	}
 }
 
+void dimmer_speed(uint32_t in)
+{
+	static uint32_t old_output = 0;
+
+    float val = 0;
+
+    old_output = 0.9*old_output+0.1*in;
+    old_output = 
+
+    uint8_t
+
+}
+
 void dimmer_update()
 {   
-	printf("cct : %f\r\n", ADD_VALUE_UNIT);
+	// printf("cct : %f\r\n", ADD_VALUE_UNIT);
     
-    char value_str[6];
+ //    char value_str[6];
 
-	memset(value_str, 0x00, 6);	
-	snprintf(value_str, 4+1, "%04d", LED_CCT_COVER(1));
-    printf("value_str:%s\r\n", value_str);
+	// memset(value_str, 0x00, 6);	
+	// snprintf(value_str, 4+1, "%04d", LED_CCT_COVER(1));
+ //    printf("value_str:%s\r\n", value_str);
  
+    for (uint16_t i = 0 ; i<=255; i++) {
+    	uint8_t value = (uint8_t)(NEW_DIMMER(i)*100);
+    	printf("%d,", value);
+    }
 
 	// ch_attr_priv[0].dimmer = 255;
  //    for (uint16_t cct = LED_CCT_BASE_VALUE; cct <= LED_CCT_BASE_MAX; cct++) {
