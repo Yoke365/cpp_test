@@ -91,18 +91,6 @@ void pwm_dimmer()
 	}
 }
 
-void dimmer_speed(uint32_t in)
-{
-	static uint32_t old_output = 0;
-
-    float val = 0;
-
-    old_output = 0.9*old_output+0.1*in;
-    old_output = 
-
-    uint8_t
-
-}
 
 void dimmer_update()
 {   

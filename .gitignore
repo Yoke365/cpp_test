@@ -16,3 +16,4 @@ main
 *.sct
 *.i
 *.htm
+*/build/*
