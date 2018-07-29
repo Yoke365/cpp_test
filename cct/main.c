@@ -16,7 +16,11 @@ int main(int argc, char argv[])
 	// for (uint8_t i = 0 ; i < 100; i++) {
 	// 	 cct_test(ledLinear[i]);
 	// }
-	cct_test(3);
+
+	for (uint8_t i = 0; i < 5; i++) {
+		printf("------------------------i:%d\r\n",i);
+		cct_test(i);
+	}
 	//pwm_test();
  	//test1();
 	return 0;
