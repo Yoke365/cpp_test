@@ -3,4 +3,4 @@ project (firmware_update)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_executable(main main.c packet.c crc16.c uart.c firmware_send.c)
+add_executable(main main.c packet.c crc16.c uart.c firmware_send.c extctl_main.c)

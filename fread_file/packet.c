@@ -4,9 +4,9 @@
 #include "packet.h"
 #include "uart.h"
 #include "crc16.h"
-
+#include <fcntl.h>
 struct uart_dev_s *packet_uart = &uart3_dev;
-
+static int _out_fd = -1;
 #define PACKET_DEBUG_EN 1
 
 #if PACKET_DEBUG_EN
@@ -20,6 +20,12 @@ uint8_t packet_buf[IAP_CONFIG_PACKET_BUFSIZE * RX_STATE_INST_NUM];
 rx_state_s rx_state_inst[RX_STATE_INST_NUM];
 rx_state_s *rx_state = rx_state_inst;
 
+void packet_fd(int fd)
+{
+	_out_fd = fd;
+	printf("_out_fd:%d\r\n", _out_fd);
+}
+
 void print_info_single(struct uart_buffer_s *recv, uint8_t *buf, uint8_t len)
 { 
     printf("{");
@@ -31,6 +37,18 @@ void print_info_single(struct uart_buffer_s *recv, uint8_t *buf, uint8_t len)
 	printf("}\r\n");
 }
 
+int protocal_send_frame_write(char *frame, int len)
+{
+	if (_out_fd < 0)
+	{  
+		printf("error:%d\r\n",_out_fd);
+		return 0;
+	}
+
+	int wlen = write(_out_fd, frame, len);
+	return wlen;
+}
+
 void print_info1(uint8_t *buf, uint8_t len)
 { 
     printf("{");
@@ -39,6 +57,10 @@ void print_info1(uint8_t *buf, uint8_t len)
 		 //usart_irq_callback(packet_uart, &buf[i]);
 	}
 	printf("}\r\n");
+
+	int len_write = protocal_send_frame_write(buf, len);
+	printf("len_write:%d\r\n", len_write);
+	
 }
 
 void packet_mem_init(void)
