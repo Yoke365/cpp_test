@@ -1,12 +1,12 @@
 #include  <stdbool.h>
 #include  <string.h>
+#include  <stdio.h>
 
 #include "packet.h"
 #include "uart.h"
 #include "crc16.h"
 #include <fcntl.h>
 struct uart_dev_s *packet_uart = &uart3_dev;
-static int _out_fd = -1;
 #define PACKET_DEBUG_EN 1
 
 #if PACKET_DEBUG_EN
@@ -20,11 +20,12 @@ uint8_t packet_buf[IAP_CONFIG_PACKET_BUFSIZE * RX_STATE_INST_NUM];
 rx_state_s rx_state_inst[RX_STATE_INST_NUM];
 rx_state_s *rx_state = rx_state_inst;
 
-void packet_fd(int fd)
-{
-	_out_fd = fd;
-	printf("_out_fd:%d\r\n", _out_fd);
-}
+uint8_t packet_buf1[IAP_CONFIG_PACKET_BUFSIZE];
+rx_state_t status= {
+	.buf = packet_buf1,
+};
+rx_state_t *_statu_p = &status;
+
 
 void print_info_single(struct uart_buffer_s *recv, uint8_t *buf, uint8_t len)
 { 
@@ -37,26 +38,14 @@ void print_info_single(struct uart_buffer_s *recv, uint8_t *buf, uint8_t len)
 	printf("}\r\n");
 }
 
-int protocal_send_frame_write(char *frame, int len)
-{
-	if (_out_fd < 0)
-	{  
-		printf("error:%d\r\n",_out_fd);
-		return 0;
-	}
-
-	int wlen = write(_out_fd, frame, len);
-	return wlen;
-}
-
 void print_info1(uint8_t *buf, uint8_t len)
 { 
-    printf("{");
-	for(int i = 0; i < len; i++) {
-		printf("%02x ", buf[i]);
-		 //usart_irq_callback(packet_uart, &buf[i]);
-	}
-	printf("}\r\n");
+ //    printf("{");
+	// for(int i = 0; i < len; i++) {
+	// 	printf("%02x ", buf[i]);
+	// 	 //usart_irq_callback(packet_uart, &buf[i]);
+	// }
+	// printf("}\r\n");
 
 	int len_write = protocal_send_frame_write(buf, len);
 	printf("len_write:%d\r\n", len_write);
@@ -397,6 +386,82 @@ bool packet_parse_data_callback_open(int fd, packet_desc_t *packet)
 			recv->tail = (recv->tail + 1) % recv->size;
 
 		}
+	}
+
+	return false;
+}
+
+
+bool packet_parse_data_callback_buf(uint8_t ch, packet_desc_t *packet)
+{   
+    _statu_p->buf[_statu_p->packet_index++] = ch; 
+ 	switch (_statu_p->parse_packet_step)
+	{
+		case FW_HEAD:							
+			if (_statu_p->packet_index >= 2)
+			{
+		        if ((_statu_p->buf[FW_START1_POS] == FW_HEAD_BYTE_1) && (_statu_p->buf[FW_START2_POS] == FW_HEAD_BYTE_2))
+		     	{   
+					_statu_p->parse_packet_step = FW_LEN;
+										
+		     	}
+				else if (_statu_p->buf[FW_START2_POS] == FW_HEAD_BYTE_1)
+				{   
+				    _statu_p->buf[FW_START1_POS] = FW_HEAD_BYTE_1;
+					_statu_p->packet_index = 1;
+				}
+				else
+				{
+					_statu_p->packet_index = 0;							
+				}
+			}
+			break;	
+			
+		case FW_LEN:	
+			if (_statu_p->packet_index >= 6)
+			{  
+			   _statu_p->FrameLen  = *((uint16_t *)&_statu_p->buf[FW_LEN_L_POS]) + 10; 
+			   if (_statu_p->FrameLen <= IAP_CONFIG_PACKET_BUFSIZE)
+			   {
+		      		_statu_p->parse_packet_step = FW_DATA_CRC_TAIL; 
+				    
+			   }
+			   else
+			   {
+					_statu_p->parse_packet_step = FW_HEAD;
+					_statu_p->packet_index            = 0; 
+					
+			   }
+			}
+			break;
+		
+		case FW_END:
+			if(_statu_p->packet_index == _statu_p->FrameLen)
+			{    
+	            uint16_t RxCrcCheckSum_A =  calc_crc((const uint8_t *)&_statu_p->buf[0], _statu_p->FrameLen-4);
+			    uint16_t RxCrcCheckSum_B =  (uint16_t)((_statu_p->buf[_statu_p->FrameLen-4+1] << 8) | _statu_p->buf[_statu_p->FrameLen-4]);
+				_statu_p->parse_packet_step = FW_HEAD;
+				_statu_p->packet_index      = 0; 
+				
+				if (RxCrcCheckSum_A == RxCrcCheckSum_B)
+				{    
+					memcpy((uint8_t*)packet, _statu_p->buf, _statu_p->FrameLen);
+					memset(_statu_p->buf, 0x00, _statu_p->FrameLen);
+					_statu_p->FrameLen = 0;
+					
+				    return true;
+				}
+				else
+				{
+				    _statu_p->crc_error++;
+				}
+				_statu_p->FrameLen = 0;
+				
+			}							
+			break;
+						
+		default:
+			break;
 	}
 
 	return false;

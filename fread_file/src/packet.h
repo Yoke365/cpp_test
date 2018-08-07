@@ -12,7 +12,7 @@
 
 #define FW_PAKET_BUF_SIZE   					200   
 #define IAP_CONFIG_PACKET_BUFSIZE 		       2048
-
+#define IAP_FW_DATA_LEN 		               128
 enum {
 	FW_START1_POS 	=   	0,
 	FW_START2_POS	=   	1,
@@ -81,9 +81,20 @@ struct CanardRxState
 
 }CanardRxState;
 typedef struct CanardRxState rx_state_s;
+typedef rx_state_s rx_state_t;
+
+#pragma pack(push, 1)
+typedef struct {
+	uint16_t total_block;
+	uint16_t cur_block;
+	uint16_t block_len;
+	uint8_t data[IAP_FW_DATA_LEN];
+} fw_packet_t;
+#pragma pack(pop)
 
 void pakect_send(int fd, uint8_t cmd, uint8_t *playload, uint16_t length);
 void print_info_single(struct uart_buffer_s *recv, uint8_t *buf, uint8_t len);
 bool packet_parse_data_callback_open(int fd, packet_desc_t *packet);
+bool packet_parse_data_callback_buf(uint8_t ch, packet_desc_t *packet);
 
 #endif /* __PACKET_H */
