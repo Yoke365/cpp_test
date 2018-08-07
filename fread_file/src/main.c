@@ -7,7 +7,7 @@
 
 #include "firmware_send.h"
 
-#define PATH "/home/yangang/work/cpp_test/fread_file/test/bootloader_cube.bin"
+#define PATH "/home/yangang/work/cpp_test/fread_file/test/bootloader_cube-v1.0.1.bin"
 
 bool task_exit = false;
 
@@ -19,7 +19,8 @@ int main(int argc, char **argv)
     
     if (!strcmp(argv[1], "update")) {
         char *port = argv[2];
-        if(update_firmware(PATH, port) == 0) {
+        char *path = argv[3];
+        if(update_firmware(path, port) == 0) {
             while(!task_exit) {
                 sleep(2); 
             }
@@ -27,8 +28,8 @@ int main(int argc, char **argv)
     }
 
     if (!strcmp(argv[1], "help")) {
-        printf("usage: ./openSTM_upload [--update <port> [--help]\r\n");
-        printf("eg: ./openSTM_upload upload /dev/ttyUSB0\r\n");
+        printf("usage: ./openSTM_upload [--update <port>  <path> [--help]\r\n");
+        printf("eg: ./openSTM_upload update /dev/ttyUSB0\r\n");
     }
 
     return 0;
