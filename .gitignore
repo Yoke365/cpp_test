@@ -17,4 +17,5 @@ main
 *.i
 *.htm
 */build/*
+*/build*/*
 !openSTM_upload/test/*.bin
