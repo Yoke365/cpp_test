@@ -5,4 +5,5 @@ set(config_module_list
 	modules/hello
 	modules/queue
 	modules/upload
+	modules/calibrate
 	)
