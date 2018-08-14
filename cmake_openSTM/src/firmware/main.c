@@ -3,10 +3,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "queue_unittest.h"
+extern int upload_main(int argc, char **argv);
+extern int queue_unittest_main(int argc, char **argv);
 
 int main(int argc, char **argv)
 {	
-	queue_work_test();
+	// upload_main(argc, argv);
+	queue_unittest_main(argc, argv);
 	return 0;
 }

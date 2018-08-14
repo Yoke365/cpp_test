@@ -45,7 +45,7 @@ typedef struct {
   //};
 } work_q_item_t;
 
-void queue_work_test(void); 
+int queue_unittest_main(int argc, char **argv);
 
 #undef EXTERN
 #ifdef __cplusplus

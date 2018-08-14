@@ -108,7 +108,7 @@ enqueue_work_item_and_wait_for_result(work_q_item_t *item)
 	}
 }
 
-void queue_work_test()
+int queue_unittest_main(int argc, char **argv)
 {
 	p[0] = create_work_item();
 	enqueue_work_item_and_wait_for_result(p[0]);
@@ -123,4 +123,6 @@ void queue_work_test()
 	destroy_work_item(p[1]);
 	dequeue_work_item();
 	destroy_work_item(p[2]);
+
+	return 0;
 }

@@ -1,5 +1,5 @@
 px4_add_module(
-	MODULE math__hello
+	MODULE modules__hello
 	SRCS
 		hello.c
 	)

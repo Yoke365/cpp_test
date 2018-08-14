@@ -2,8 +2,9 @@ cmake_minimum_required (VERSION 2.6)
 project (cmake_openSTM)
 
 include_directories(
-	${CMAKE_SOURCE_DIR}/src/lib/include
-	${CMAKE_SOURCE_DIR}/src/lib/firmware
+	${CMAKE_SOURCE_DIR}/src/modules/queue/include
+	${CMAKE_SOURCE_DIR}/src/modules/hello/include
+	${CMAKE_SOURCE_DIR}/src/modules/upload/include
 	)
 
 # CMAKE_MODULE_PATH is env virable
@@ -22,8 +23,6 @@ foreach(module ${config_module_list})
 endforeach()
 
 add_subdirectory(src/firmware)
-
-
 
 
 

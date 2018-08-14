@@ -1,6 +1,6 @@
 
 px4_add_module(
-	MODULE lib__queue
+	MODULE modules__queue
 	SRCS
 		dq_addafter.c 
 		dq_addfirst.c   
@@ -16,4 +16,5 @@ px4_add_module(
 		sq_addfirst.c 
 		sq_remafter.c 
 		sq_remfirst.c
+		queue_unittest.c
 	)
