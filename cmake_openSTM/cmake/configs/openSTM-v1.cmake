@@ -6,4 +6,5 @@ set(config_module_list
 	modules/queue
 	modules/upload
 	modules/calibrate
+	modules/orbsim
 	)

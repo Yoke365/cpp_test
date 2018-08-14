@@ -21,7 +21,7 @@
 wheel_mesg_s wheel_send_mesg; 
 wheel_mesg_s wheel_recv_mesg;
 
-int main(int argc, char argv[])
+int orbsim_main(int argc, char** argv)
 {    
     /* 发送orb消息 */
     wheel_send_mesg.val = 1;
