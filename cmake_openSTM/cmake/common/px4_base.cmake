@@ -264,7 +264,7 @@ function(px4_add_module)
 		REQUIRED MODULE
 		ARGN ${ARGN})
 
-	add_library(${MODULE} STATIC EXCLUDE_FROM_ALL ${SRCS})
+	add_library(${MODULE} SHARED ${SRCS})
 
 	if(MAIN)
 		set_target_properties(${MODULE} PROPERTIES
