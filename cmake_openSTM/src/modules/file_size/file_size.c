@@ -2,9 +2,7 @@
 
 long filesize(FILE*stream);
 
-
-
-int main(int argc, char **argv)
+int file_size_main(int argc, char **argv)
 {
 	FILE *stream;
 	
@@ -41,4 +39,17 @@ filesize(FILE*stream)
 	fseek(stream,curpos,SEEK_SET);
 	
 	return length;
+}
+
+int ftell_test(void)
+{
+	FILE *stream;
+
+	stream = fopen("MYFILE.TXT", "w+");
+	fprintf(stream, "This is a test");
+	printf("The file pointer is at byte \
+		%ld\n", ftell(stream));
+	fclose(stream);
+
+	return 0;
 }

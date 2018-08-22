@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "nuttx_i2c.h"
+
 
 uint32_t high_level_width=0; 
 uint32_t high_level_width_old=0;
@@ -115,7 +115,7 @@ int collect(uint8_t *val, uint8_t len, float *diff_press_pa_raw_data)
 	return ret;
 }
 
-int main(int argc, char argv[])
+int arispeed_main(int argc, char **argv)
 {    
     printf("start\r\n");
     //probe();

@@ -7,4 +7,8 @@ set(config_module_list
 	modules/upload
 	modules/calibrate
 	modules/orbsim
+	modules/add_variable
+	modules/airspeed
+	modules/file_size
+	modules/time_os
 	)

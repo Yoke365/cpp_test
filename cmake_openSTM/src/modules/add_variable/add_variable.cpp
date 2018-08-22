@@ -38,8 +38,9 @@ void A::set(int z_input)
 }
 
 
+extern "C" { extern int add_variable_main (int argc, char **argv); }
 
-int main (int argc, char **argv)
+int add_variable_main (int argc, char **argv)
 {
 	A *a;
 

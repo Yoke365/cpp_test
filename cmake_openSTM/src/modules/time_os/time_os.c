@@ -28,7 +28,7 @@ void led_callback()
 typedef struct CanardBufferBlock
 {
     struct CanardBufferBlock* next;
-    uint8_t data[];
+    uint8_t data;
     uint8_t a;
     uint8_t b;
     uint8_t c;
@@ -48,7 +48,7 @@ int main(int argc, char argv[])
      
 	 printf("system start\r\n");
 
-     printf("%d\r\n", sizeof(CanardBufferBlock));
+     printf("%ld\r\n", sizeof(CanardBufferBlock));
    
      while(1) {
 		timestamp_tick();
