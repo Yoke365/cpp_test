@@ -11,4 +11,9 @@ set(config_module_list
 	modules/airspeed
 	modules/file_size
 	modules/time_os
+	modules/c_pointer_fun
+	modules/fprintf
+	modules/nuttx_i2c
+	modules/cct_demo
+	#modules/pthread_mutex_test
 	)
