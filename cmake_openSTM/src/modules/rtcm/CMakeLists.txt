@@ -1,20 +1,6 @@
 
 px4_add_module(
-	MODULE modules__queue
+	MODULE modules__rtcm
 	SRCS
-		dq_addafter.c 
-		dq_addfirst.c   
-		dq_rem.c 
-		dq_remlast.c 
-		sq_addafter.c 
-		sq_addlast.c  
-		sq_rem.c   
-		sq_remlast.c 
-		dq_addbefore.c 
-		dq_addlast.c 
-		dq_remfirst.c 
-		sq_addfirst.c 
-		sq_remafter.c 
-		sq_remfirst.c
-		queue_unittest.c
+		rtcm_main.c 
 	)

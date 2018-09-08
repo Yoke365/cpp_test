@@ -1,6 +1,6 @@
 #include	<stdio.h>
 #include	<pthread.h>
-#include	"unistd.h"
+#include	<unistd.h>
 
 #include	"pthread_run1.h"
 #include	"pthread_run2.h"
@@ -9,7 +9,7 @@
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 int count = 0;
 
-int pthread_test_main(int argc, char*argv)
+int pthread_test_main(int argc, char**argv)
 {
 	pthread_t thread1,thread2;
 

@@ -858,7 +858,7 @@
 	uint8_t b = 0;
 
 
-	int main(int argc, char argv[])
+	int cct_main(int argc, char **argv)
 	{    
 		// printf("uint8_t r_255_gb[256][4]={\r\n");
 	 //    for (uint16_t i = 0; i < 256; i++) {

@@ -15,5 +15,6 @@ set(config_module_list
 	modules/fprintf
 	modules/nuttx_i2c
 	modules/cct_demo
-	#modules/pthread_mutex_test
+	modules/rtcm
+	modules/pthread_mutex_test
 	)

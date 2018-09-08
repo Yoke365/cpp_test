@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "nuttx_i2c.h"
 
 #define RTCM_CONFIG_NUM   6
 
