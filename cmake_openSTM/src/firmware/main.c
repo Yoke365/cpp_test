@@ -16,6 +16,7 @@ extern int nuttx_i2c_main(int argc, char** argv);
 extern int cct_main(int argc, char **argv);
 extern int rtcm_main(int argc, char** argv);
 extern int pthread_test_main(int argc, char**argv);
+extern int hello_world_print_main(int argc,char **argv);
 
 int main(int argc, char **argv)
 {	
@@ -24,7 +25,7 @@ int main(int argc, char **argv)
 	//cct_main(argc, argv);
 
 	//fprintf_main(argc, argv);
-	pthread_test_main(argc, argv);
+	hello_world_print_main(argc, argv);
 	
 	return 0;
 }
