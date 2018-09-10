@@ -13,7 +13,7 @@
 namespace device
 {
 
-#define ENOSYS  0
+//#define ENOSYS  0
 #define OK  0
 
 static int	cdev_open(file_t *filp);

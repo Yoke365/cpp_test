@@ -17,6 +17,7 @@ extern int cct_main(int argc, char **argv);
 extern int rtcm_main(int argc, char** argv);
 extern int pthread_test_main(int argc, char**argv);
 extern int hello_world_print_main(int argc,char **argv);
+extern int px4_char_dev_main(int argc,char **argv);
 
 int main(int argc, char **argv)
 {	
@@ -25,7 +26,7 @@ int main(int argc, char **argv)
 	//cct_main(argc, argv);
 
 	//fprintf_main(argc, argv);
-	hello_world_print_main(argc, argv);
+	px4_char_dev_main(argc, argv);
 	
 	return 0;
 }

@@ -2,6 +2,8 @@
 #include "fs.h"
 #include <iostream>
 
+extern "C"{ extern int px4_char_dev_main(int argc, char **argv);}
+
 device::serial *p;
 
 //注册串口驱动, 使用c++实现
@@ -11,7 +13,7 @@ void cplusplus_serial_register(device::serial &tty)
     tty.init();
 }
 
-int main(int argc, char **argv)
+int px4_char_dev_main(int argc, char **argv)
 {    
 	std::cout<< "使用c++实现linux的驱动程序"<<std::endl;
     
