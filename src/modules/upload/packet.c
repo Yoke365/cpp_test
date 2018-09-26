@@ -38,18 +38,13 @@ void print_info_single(struct uart_buffer_s *recv, uint8_t *buf, uint8_t len)
 	printf("}\r\n");
 }
 
-void print_info1(uint8_t *buf, uint8_t len)
+void print_info_soft(uint8_t *buf, uint8_t len)
 { 
- //    printf("{");
-	// for(int i = 0; i < len; i++) {
-	// 	printf("%02x ", buf[i]);
-	// 	 //usart_irq_callback(packet_uart, &buf[i]);
-	// }
-	// printf("}\r\n");
-
-	int len_write = protocal_send_frame_write(buf, len);
-	printf("len_write:%d\r\n", len_write);
-	
+    printf("{");
+	for(int i = 0; i < len; i++) {
+		printf("%02x ", buf[i]);
+	}
+	printf("}\r\n");	
 }
 
 void packet_mem_init(void)
@@ -108,7 +103,7 @@ void pakect_send(int fd, uint8_t cmd, uint8_t *playload, uint16_t length)
 	uint16_t send_len = FW_PAKET_HEAD_LEN + length + FW_PAKET_TAIL_LEN;
   
    	// struct uart_buffer_s *recv = find_uart(fd);	
-    print_info1(buf, send_len);
+    print_info_soft(buf, send_len);
 	PACKET_DEBUG("send len: %d\r\n", send_len);
 }
 
@@ -172,7 +167,7 @@ bool packet_parse(int fd, uint8_t ch, packet_desc_t *packet)
 				if (RxCrcCheckSum_A == RxCrcCheckSum_B)
 				{    
 					memcpy((uint8_t*)packet, rx_state->buf, rx_state->FrameLen);
-					print_info1((uint8_t*)packet, rx_state->FrameLen);
+					print_info_soft((uint8_t*)packet, rx_state->FrameLen);
 					memset(rx_state->buf, 0x00, sizeof(rx_state->buf));
 			
 				    return true;
@@ -259,7 +254,7 @@ bool packet_parse_data_callback(uint8_t ch)
 				if (RxCrcCheckSum_A == RxCrcCheckSum_B)
 				{    
 					memcpy((uint8_t*)packet, rx_state->buf, rx_state->FrameLen);
-					print_info1((uint8_t*)packet, rx_state->FrameLen);
+					print_info_soft((uint8_t*)packet, rx_state->FrameLen);
 					memset(rx_state->buf, 0x00, sizeof(rx_state->buf));
 					recv->tail = (recv->tail + 1) % recv->size;
 
@@ -366,7 +361,7 @@ bool packet_parse_data_callback_open(int fd, packet_desc_t *packet)
 						if (RxCrcCheckSum_A == RxCrcCheckSum_B)
 						{    
 							memcpy((uint8_t*)packet, rx_state->buf, rx_state->FrameLen);
-							print_info1((uint8_t*)packet, rx_state->FrameLen);
+							print_info_soft((uint8_t*)packet, rx_state->FrameLen);
 							memset(rx_state->buf, 0x00, sizeof(rx_state->buf));
  							recv->tail = (recv->tail + 1) % recv->size;
 
@@ -466,3 +461,76 @@ bool packet_parse_data_callback_buf(uint8_t ch, packet_desc_t *packet)
 
 	return false;
 }
+
+#include "wolz_packet.h"
+
+// #define DEBUG 
+
+void wolz_set_postion(int8_t angle)
+{
+	actuator_new_position_frame_t position;
+	
+	// position.command_code = ACTURATOR_COMMAND_SET;
+	// position.actuator_id = 0X01;
+	// position.position_high =  0X0D;
+	// position.position_low = 0X3A;
+	// position.crc_high_byte = 0X0A;
+	// position.crc_low_byte = 0X8B;
+
+	position.command_code = 0xB1;
+	position.actuator_id = 0X01;
+	position.position_high =  0X00;
+	position.position_low = 0X00;
+	position.crc_high_byte = 0X54;
+	position.crc_low_byte = 0X05;
+
+	print_info_soft((uint8_t *)&position, 6);
+//#ifndef DEBUG 
+	int len_write = protocal_send_frame_write((uint8_t *)&position, 6);
+	printf("len_write:%d\r\n", len_write);
+//#endif 
+	char read_buf[20];
+    int read_len = 0; 
+    read_len = protocal_read(read_buf, sizeof(read_buf));
+	if (read_len > 0) {
+		print_info_soft((uint8_t *)read_buf, read_len);
+	} else {
+		printf("read null\r\n");
+	}
+	
+}
+
+void wolz_read_temp(void)
+{
+	actuator_new_position_frame_t position;
+	char buf[6] = {0xB1, 0x01, 0x00, 0x00, 0x54, 0x05}; 
+
+	print_info_soft((uint8_t *)&position, 6);
+#ifndef DEBUG 
+	int len_write = protocal_send_frame_write((uint8_t *)&position, 6);
+	printf("len_write:%d\r\n", len_write);
+#endif 
+	char read_buf[20];
+    int read_len = 0; 
+    read_len = protocal_read(read_buf, sizeof(read_buf));
+	if (read_len > 0) {
+		print_info_soft((uint8_t *)read_buf, read_len);
+	} else {
+		printf("read null\r\n");
+	}
+	
+}
+
+void wolz_unittest(command_code_t code)
+{
+	switch (code) {
+	case ACTURATOR_COMMAND_SET:
+		wolz_set_postion(0);
+		break;
+
+	default:
+		break;
+	}
+}
+
+

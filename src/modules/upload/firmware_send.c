@@ -68,7 +68,7 @@ int send_file(char *name)
 }
 
 int protocal_send_frame_write(char *frame, int len)
-{
+{  
     if (_fd < 0)
     {  
         printf("error:%d\r\n",_fd);
@@ -78,6 +78,23 @@ int protocal_send_frame_write(char *frame, int len)
     int wlen = write(_fd, frame, len);
     return wlen;
     return 0;
+}
+
+int protocal_read(char *buf, int len)
+{  
+    if (_fd < 0) {  
+        printf("error:%d\r\n",_fd);
+        return -1;
+    }
+
+    if (len < 1) {  
+        printf("len error:%d\r\n",len);
+        return -1;
+    }
+
+    usleep(50*1000);
+
+    return read(_fd, buf, len);
 }
 
 void send_request(void)
@@ -187,6 +204,26 @@ int update_firmware(char *name, char *path)
     pthread_create(&thread, NULL, &serial_recv_thread, NULL );
 
     update_file(name);
+
+    close(_fd); 
+    return 0;
+error:
+    close(_fd);
+    return -1;
+}
+#include "wolz_packet.h"
+
+int wolz_test(char *path)
+{
+    const char*path_default = "/dev/ttyUSB0";
+
+     //open serial
+    _fd = serial_open(path);
+    if(_fd < 0) {
+        goto error;
+    }   
+
+    wolz_unittest(ACTURATOR_COMMAND_SET);
 
     close(_fd); 
     return 0;
