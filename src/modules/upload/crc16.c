@@ -71,8 +71,11 @@ uint16_t calc_crc(const uint8_t *buf, const uint32_t len)
 }
 
 void calc_crc_unittest(void)
-{
-    char commander[4] = {0xDD, 0x01, 0x14, 0x40};
+{  
+    // char commander[6] = {0xDD, 0x01, 0x16, 0x60, 0x51, 0x57} ;   //最左边
+    // char commander[6] = {0xDD, 0x01, 0x10, 0x00, 0x44, 0x17}; //中位
+    char commander[6] = {0xDD, 0x01, 0x09, 0x21, 0x92, 0xd2}; //最右边
+
     uint16_t crc  = 0;
 
     crc = calc_crc(commander, 4);
