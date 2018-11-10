@@ -34,7 +34,7 @@ extern int vector_main(int argc, char **argv);
 
 int main(int argc, char **argv)
 {	
-	upload_main(argc, argv);
+	// upload_main(argc, argv);
 	// queue_unittest_main(argc, argv);
 	// calibrate_main(argc, argv);
 	// orbsim_main(argc, argv);
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	// nuttx_i2c_main(argc, argv);
 	// cct_main(argc, argv);
 	// rtcm_main(argc, argv);
-	// pthread_test_main(argc, argv);
+	pthread_test_main(argc, argv);
 
 	// cast_main(argc,argv);
 	// const_type_main(argc,argv);

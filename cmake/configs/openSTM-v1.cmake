@@ -14,7 +14,7 @@ set(config_module_list
 		# modules/nuttx_i2c
 		# modules/cct_demo
 		# modules/rtcm
-		# modules/pthread_test
+		modules/pthread_test
 		# cpp/cast
 		# cpp/const_type
 		# cpp/construct
