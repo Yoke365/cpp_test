@@ -17,6 +17,8 @@ extern int nuttx_i2c_main(int argc, char** argv);
 extern int cct_main(int argc, char **argv);
 extern int rtcm_main(int argc, char** argv);
 extern int pthread_test_main(int argc, char**argv);
+extern int sbus_main(int argc, char** argv);
+extern int mavlink_main(int argc, char**argv);
 
 //cpp interface 
 extern int cast_main(int argc, char **argv);
@@ -46,7 +48,9 @@ int main(int argc, char **argv)
 	// nuttx_i2c_main(argc, argv);
 	// cct_main(argc, argv);
 	// rtcm_main(argc, argv);
-	pthread_test_main(argc, argv);
+	// pthread_test_main(argc, argv);
+	// sbus_main(argc, argv);
+	 mavlink_main(argc, argv);
 
 	// cast_main(argc,argv);
 	// const_type_main(argc,argv);
