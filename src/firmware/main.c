@@ -50,14 +50,14 @@ int main(int argc, char **argv)
 	// rtcm_main(argc, argv);
 	// pthread_test_main(argc, argv);
 	// sbus_main(argc, argv);
-	 mavlink_main(argc, argv);
+	 // mavlink_main(argc, argv);
 
 	// cast_main(argc,argv);
 	// const_type_main(argc,argv);
 	// construct_main(argc,argv);
 	// helloworld_main(argc,argv);
 	// parent_to_child_main(argc,argv);
-	// px4_char_dev_main(argc,argv);
+	px4_char_dev_main(argc,argv);
 	// refence_main(argc,argv);
 	// static_member_main(argc,argv);
 	// template_main(argc,argv);

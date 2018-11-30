@@ -20,7 +20,7 @@ public:
 		// std::cout<< "instance deconstruct" <<std::endl;
 	};
 	
-    virtual int	init();
+    // virtual int	init();
 	virtual int	open(file_t *filp);
 	virtual int	close(file_t *filp);
 	virtual ssize_t	read(file_t *filp, char *buffer, size_t buflen);

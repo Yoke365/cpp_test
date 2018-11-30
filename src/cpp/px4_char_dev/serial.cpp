@@ -2,14 +2,14 @@
 
 namespace device {
 
- int serial::init()
- {   
- 	std::cout<< "serial::init" <<std::endl;
+ // int serial::init()
+ // {   
+ // 	std::cout<< "serial::init" <<std::endl;
 
- 	CDev::init();
+ // 	CDev::init();
  	
- 	return 0;
- }
+ // 	return 0;
+ // }
 
  int	serial::open(file_t *filp)
  {   

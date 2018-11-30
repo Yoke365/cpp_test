@@ -53,7 +53,7 @@ CDev::init()
 	// now register the driver
 	if (_devname != NULL) {
 		ret = register_driver(_devname, &fops, 0666, (void *)this);
-
+		std::cout<< "CDev::init register_driver" <<std::endl;
 		if (ret != OK) {
 			goto out;
 		}
