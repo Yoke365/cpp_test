@@ -10,6 +10,27 @@
 #define STREAM_CONINUE_CODE(fd, x)          pakect_send(fd, CONNITUE_RUN_CODE, x, 2);
 #define STREAM_STOP_CODE(fd, x)             pakect_send(fd, STOP_CODE, x, 2);
 
+typedef struct color{
+    uint8_t red_color;
+    uint8_t green_color;
+    uint8_t blue_color;
+}color_t;
+
+color_t color[3] = {
+    {0xff, 0x00, 0x00},
+    {0x00, 0xff, 0x00},
+    {0x00, 0x00, 0xff},
+};
+
+void cmd_test(void)
+{   
+
+    for (uint8_t i = 0; i < 3 ; i++) {
+       pakect_send(0, CMD_LED_COLOR, &color[i], 3);     
+    }  
+}
+
+
 int _fd = -1;
 uint8_t buf[128];
 bool req = false;

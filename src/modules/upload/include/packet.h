@@ -58,6 +58,8 @@ enum {
 	STATE_POLL_CODE       = 0X1A,  
 	STATE_POLL_REPLY_CODE = 0X81,
 	SENSOR_TRIGGER_CODE    = 0X21, 
+
+	CMD_LED_COLOR         =   0x31,
 };
 
 #pragma pack(push, 1)

@@ -36,7 +36,7 @@ extern int vector_main(int argc, char **argv);
 
 int main(int argc, char **argv)
 {	
-	// upload_main(argc, argv);
+	upload_main(argc, argv);
 	// queue_unittest_main(argc, argv);
 	// calibrate_main(argc, argv);
 	// orbsim_main(argc, argv);
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 	// construct_main(argc,argv);
 	// helloworld_main(argc,argv);
 	// parent_to_child_main(argc,argv);
-	px4_char_dev_main(argc,argv);
+	// px4_char_dev_main(argc,argv);
 	// refence_main(argc,argv);
 	// static_member_main(argc,argv);
 	// template_main(argc,argv);

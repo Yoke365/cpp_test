@@ -42,7 +42,7 @@ void print_info_soft(uint8_t *buf, uint8_t len)
 { 
     printf("{");
 	for(int i = 0; i < len; i++) {
-		printf("%02x ", buf[i]);
+		printf("0x%02x, ", buf[i]);
 	}
 	printf("}\r\n");	
 }
@@ -82,8 +82,8 @@ void pakect_send(int fd, uint8_t cmd, uint8_t *playload, uint16_t length)
 
     buf[FW_START1_POS] = FW_HEAD_BYTE_1;
     buf[FW_START2_POS] = FW_HEAD_BYTE_2;
-	buf[FW_DST_POS]    = 1;
-    buf[FW_SRC_POS]    = 2;
+	buf[FW_DST_POS]    = 0x33;
+    buf[FW_SRC_POS]    = 0x80;
 
 	buf[FW_LEN_L_POS]  = (length+1) & 0xff;  //多加1个cmd的字�?
     buf[FW_LEN_H_POS]  = ((length+1) >> 8) & 0xff;

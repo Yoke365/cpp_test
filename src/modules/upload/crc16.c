@@ -36,39 +36,39 @@ static const uint16_t crc16_tab[] = {
 };
 
  
-// uint16_t calc_crc(const uint8_t *buf, const uint32_t len)
-// {
-//     uint32_t i;
-//     uint16_t cksum;
-
-//     cksum = 0;
-//     for (i = 0;  i < len;  i++) {
-//                 cksum = crc16_tab[((cksum>>8) ^ *buf++) & 0xFF] ^ (cksum << 8);
-//     }
-//     return cksum;
-// }
-
 uint16_t calc_crc(const uint8_t *buf, const uint32_t len)
 {
-    unsigned short int crc = 0;
-    char x,y;
+    uint32_t i;
+    uint16_t cksum;
 
-    crc = 0xffff;
-    for (x = 0;  x < 4;  x++) 
-    {
-        crc = ((buf[x] << 8) ^ crc);
-        
-        for (y = 0;  y < 8;  y++) 
-        {
-            if (crc & 0x8000) 
-                crc = (crc << 1) ^ 0x8005;
-            else 
-                crc = crc << 1;
-        }
-        
+    cksum = 0;
+    for (i = 0;  i < len;  i++) {
+                cksum = crc16_tab[((cksum>>8) ^ *buf++) & 0xFF] ^ (cksum << 8);
     }
-    return crc;
+    return cksum;
 }
+
+// uint16_t calc_crc(const uint8_t *buf, const uint32_t len)
+// {
+//     unsigned short int crc = 0;
+//     char x,y;
+
+//     crc = 0xffff;
+//     for (x = 0;  x < 4;  x++) 
+//     {
+//         crc = ((buf[x] << 8) ^ crc);
+        
+//         for (y = 0;  y < 8;  y++) 
+//         {
+//             if (crc & 0x8000) 
+//                 crc = (crc << 1) ^ 0x8005;
+//             else 
+//                 crc = crc << 1;
+//         }
+        
+//     }
+//     return crc;
+// }
 
 void calc_crc_unittest(void)
 {  

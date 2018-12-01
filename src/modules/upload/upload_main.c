@@ -57,8 +57,15 @@ void test_str(char *str)
     sprintf(str, "%d*%d", a, b);
 }
 
+extern cmd_test();
+
+//注意: uint16_t calc_crc(const uint8_t *buf, const uint32_t len) 这个crc编码有2个同样的函数
+
 int upload_main(int argc, char **argv)
 {   
+     cmd_test();
+     return -1;
+
     if (argc < 2) {
         return -1;
     }
