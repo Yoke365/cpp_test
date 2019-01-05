@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-
+#include<fcntl.h>
 //c interface
 extern int upload_main(int argc, char **argv);
 extern int queue_unittest_main(int argc, char **argv);
@@ -19,6 +19,7 @@ extern int rtcm_main(int argc, char** argv);
 extern int pthread_test_main(int argc, char**argv);
 extern int sbus_main(int argc, char** argv);
 extern int mavlink_main(int argc, char**argv);
+extern int getopt_main(int argc, char**argv);
 
 //cpp interface 
 extern int cast_main(int argc, char **argv);
@@ -34,9 +35,24 @@ extern int template_class_main(int argc, char **argv);
 extern int this_private_main(int argc, char **argv);
 extern int vector_main(int argc, char **argv);
 
+
+
 int main(int argc, char **argv)
-{	
-	upload_main(argc, argv);
+{	 
+	// int fd;
+	// int new_fd;
+	// fd = open("./test.file", O_RDWR | O_CREAT | O_TRUNC, 0777);
+	// printf("fd:%d\n", fd);
+/*
+	new_fd = dup(fd);
+	printf("new_fd:%d",new_fd);
+    
+    uint8_t buf[5]="abc";
+	write(new_fd, buf, 3);*/
+	// close(fd);
+	// close(new_fd);
+	getopt_main(argc, argv);
+	// upload_main(argc, argv);
 	// queue_unittest_main(argc, argv);
 	// calibrate_main(argc, argv);
 	// orbsim_main(argc, argv);

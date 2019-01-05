@@ -42,7 +42,7 @@ void print_info_soft(uint8_t *buf, uint8_t len)
 { 
     printf("{");
 	for(int i = 0; i < len; i++) {
-		printf("0x%02x, ", buf[i]);
+		printf("%02x ", buf[i]);
 	}
 	printf("}\r\n");	
 }

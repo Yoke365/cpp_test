@@ -17,6 +17,8 @@ set(config_module_list
 		modules/pthread_test
 		modules/sbus
 		modules/mavlink
+		modules/getopt
+		
 
 		cpp/cast
 		cpp/const_type
